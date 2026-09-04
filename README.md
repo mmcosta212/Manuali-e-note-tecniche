@@ -9,3 +9,6 @@ La seguente repository contiene una raccolta di note tecniche e casi di studio s
 
 - **Note2 - Notes_about_rolling_chunk_window**  
   Approfondimento sulle finestre mobili (rolling windows) nato durante lo sviluppo di un progetto in Python per l'analisi di serie storiche. Le note descrivono l'idea alla base dell'approccio, la formulazione matematica del metodo e includono un esempio applicativo per comprenderne l'utilizzo in un contesto reale.
+  
+- **Note3 - Isolation_Forest_a_geometric_point_of_view**
+  Note su un approccio visuale ed esplorativo per algoritmi di Isolation Forest.
