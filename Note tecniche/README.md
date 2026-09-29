@@ -2,6 +2,11 @@
 La seguente repository contiene una raccolta di note tecniche e casi di studio sviluppati attraverso attività di studio, ricerca e sperimentazione. Le note raccolgono concetti teorici, osservazioni metodologiche ed esempi applicativi nati da specifici contesti progettuali.
 
 ## Contenuti
+
+### Materiali Sas
+Raccolta di appunti e esercitazioni in linguaggio Sas.
+
+### Note tecniche
 - **Note1 - Proc Expand.pdf**: studio della procedura PROC EXPAND in linguaggio SAS, nato durante la costruzione di un motore SAS per la modellazione di curve di rating. Le note descrivono l'idea alla base dell'utilizzo della procedura, il contesto applicativo e un esempio di use case sviluppato per comprenderne il ruolo all'interno del processo di modellazione.
 
 - **Note2 - Notes_about_rolling_chunk_window.pdf**: approfondimento sulle finestre mobili (rolling windows) nato durante lo sviluppo di un progetto in Python per l'analisi di serie storiche. Le note descrivono l'idea alla base dell'approccio, la formulazione matematica del metodo e includono un esempio applicativo per comprenderne l'utilizzo in un contesto reale.
