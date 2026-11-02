@@ -1,0 +1,57 @@
+
+%macro crea_progetto(path=, progetto=);
+
+    %local main_folder folders i folder rc did;
+
+    /* Percorso principale */
+    %let main_folder=&path./&progetto.;
+
+    /* Creazione cartella principale */
+    %let rc=%sysfunc(filename(fref,%superq(main_folder)));
+
+    %let did=%sysfunc(dopen(&fref));
+
+    %if &did=0 %then %do;
+        %let rc=%sysfunc(dcreate(&progetto.,&path.));
+    %end;
+    %else %do;
+        %let rc=%sysfunc(dclose(&did));
+    %end;
+
+    %let rc=%sysfunc(filename(fref));
+
+    /* Sottocartelle */
+    %let folders=MACRO PGM INPUT OUTPUT;
+
+    %do i=1 %to 4;
+
+        %let folder=%scan(&folders.,&i.);
+
+        %let rc=%sysfunc(filename(fref,
+            %superq(main_folder)/&folder.
+        ));
+
+        %let did=%sysfunc(dopen(&fref));
+
+        %if &did=0 %then %do;
+            %let rc=%sysfunc(dcreate(&folder.,&main_folder.));
+        %end;
+        %else %do;
+            %let rc=%sysfunc(dclose(&did));
+        %end;
+
+        %let rc=%sysfunc(filename(fref));
+
+    %end;
+
+    %put NOTE: Struttura progetto creata in &main_folder.;
+
+%mend crea_progetto;
+
+
+/* ESEMPIO */
+
+/* %crea_progetto(
+    path=\folder1\folder2\folder3,
+    progetto=PROGETTO_ABC
+);*/
