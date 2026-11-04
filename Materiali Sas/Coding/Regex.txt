@@ -1,0 +1,75 @@
+/*REGULAR EXPRESSION*/
+
+/*1 Match singoli*/
+
+/*La seguente variabili è un elenco di parole*/
+%let LISTA = %str(HIVE?|HEPATITIS|HTLV|CYCLOSPORA);
+
+data Work1;
+	string1 = 'GR3';
+	string2 = "HIV Positive";
+	string3 = 'HIVE?';
+	string4 = 'akskdj3 444 ep';
+	string5 = 'akskdj3 344 ep';
+	string6 = 'akskdj3 224 ep';
+run;
+
+data Work2;
+	set Work1;
+	
+	/*Uso della prxmatch: porre tra "//" la regular expression e poi la stringa in cui cercare*/
+	
+	/*Cerca parola*/
+	if prxmatch("/GR3/", string1) then flag1 = 'X';
+	
+	/*Cerca in lista: /(LISTA)/ */
+	if prxmatch("/(&LISTA.)/", string2) then flag2 = 'X';
+	
+	/*Cerca più parole: /(PAROLA1 | PAROLA2)/ */
+	if prxmatch("/(GR3|SEVERE)/", string3) then flag3 = 'X';
+	
+run;
+
+proc print data = Work2;
+run;
+
+/*2 Match per lettere iniziali e finali*/
+
+/*Tutti colori che iniziano per h,m,j e finiscono per y*/
+/* ^(h|m|j) inizio di parola, .* è tutto ciò che sta in mezzo, \s è spazio, *$ è per finale, i è case intensitive */
+proc sql;
+	create table A1 as 
+	select name 
+	from sashelp.class 
+	where prxmatch('/^(h|m|j).*y\s*$/i', name); 
+quit;
+
+proc print data = A1;
+run;
+
+/*3 Se contiene la parola 4dr: \b ... \b*/
+data app3; 
+	set sashelp.cars (obs=8 keep=model); 
+	if prxmatch("/\b4dr\b/i", model) then Flag = 'X'; 
+run;
+
+/*4*/
+data app5; 
+	set work1;
+	if prxmatch("/\w\s\b444\b/i", string4) then Flag4 = 'X'; 
+	if prxmatch("/\w\s\b444\b/i", string5) then Flag5 = 'X'; 
+	if prxmatch("/\w\s\d\d\d\s\bep\b/i", string6) then Flag6 = 'X'; 
+run;
+
+/*5*/
+data P;
+	set work1(keep=string6);
+run;
+
+data app6; 
+	set P;
+	where prxmatch("/\w\s\d\d\d\s\bep\b/i", string6) > 0; 
+run;
+
+
+
