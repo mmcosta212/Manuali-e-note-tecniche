@@ -1,0 +1,15 @@
+/*HPSLIT: procedura per eseguire alberi decisionali*/
+
+data new;
+set sashelp.bweight;
+count + 1;/*Aggiungo un contatore*/
+run;
+
+ods graphics on;/*Options consigliata da aggiungere se tratto tanti record*/
+
+proc hpsplit data=new(obs=1000) seed=123;
+class black boy married momedlevel momsmoke;
+model weight = black boy married momedlevel momsmoke momage momwtgain visit cigsperday;
+run;
+
+ods graphics off;

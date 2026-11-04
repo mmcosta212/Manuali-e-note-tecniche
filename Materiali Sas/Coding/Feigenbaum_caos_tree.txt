@@ -1,0 +1,42 @@
+data albero;
+	
+	x=0.01;
+	
+	do i=1 to 4 by 0.00001;
+	x = i*x*(1-x);
+	output;
+	end;
+
+	
+run;
+
+proc sgplot data=albero;
+    scatter x=i y=x  /
+    markerattrs=(symbol=CircleFilled size=2px);
+run;
+
+/*Orbita*/
+%let nmax = 700;
+%let L = 3.43;
+
+data orbita(keep = i x);
+	
+	x = 0.1;
+	
+	do i = 1 to &nmax.;
+		x_1 = &L.*x*(1-x);
+		x = x_1;
+		output;
+	end;
+
+run;
+
+proc sgplot data=orbita;
+    scatter x=i y=x /
+    markerattrs=(symbol=CircleFilled size=6px);
+run;
+
+proc sgplot data=orbita;
+    series x=i y=x /
+    markerattrs=(symbol=CircleFilled size=6px);
+run;

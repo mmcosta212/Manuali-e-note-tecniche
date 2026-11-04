@@ -1,4 +1,3 @@
-
 %macro crea_progetto(path=, progetto=);
 
     %local main_folder folders i folder rc did;

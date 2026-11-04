@@ -1,0 +1,100 @@
+/*******************************************************************************
+ * SCRIPT NAME: Linear Regression Analysis
+ * DESCRIPTION: A template and guide for running linear regression models 
+ *              and diagnostic tests in SAS.
+ *
+ * ------------------------------------------------------
+ * OFFICIAL DOCUMENTATION & RESOURCES (PROC REG):
+ * ------------------------------------------------------
+ * 1. Getting Started:
+ *    https://documentation.sas.com/doc/en/pgmsascdc/v_079/statug/statug_reg_gettingstarted01.htm
+ *
+ * 2. Procedure Syntax:
+ *    https://documentation.sas.com/doc/en/pgmsascdc/v_079/statug/statug_reg_syntax01.htm
+ *
+ * 3. Model Fit & Diagnostics:
+ *    https://documentation.sas.com/doc/en/pgmsascdc/v_079/statug/statug_reg_details25.htm
+ *
+ * 4. Testing for Heteroscedasticity:
+ *    https://documentation.sas.com/doc/en/pgmsascdc/v_079/statug/statug_reg_details30.htm
+ 
+ *******************************************************************************/
+
+/* 1) A first model*/
+ods graphics on;
+
+proc reg data=sashelp.class outest=regr_1;
+   model Weight = Height;
+run; 
+  
+/* 2) Explore the outest (regr_1)
+- Intercept	 Intercept of the linear model
+- _DEPVAR_	 Dependent variable
+- _RMSE_	 RMSE*/
+
+proc print data=regr_1;
+run;
+
+proc contents data=regr_1;
+run;
+
+/* 3) Using corr parameter (it displays correlation matrix for variables 
+listed in MODEL and VAR statements)*/
+proc reg data=sashelp.class outest=regr_1 corr;
+   model Weight = Height;
+run;
+
+proc corr data=sashelp.class outp=r(where=(_TYPE_="CORR")) noprint;
+   var Weight Height;
+run;
+
+/*---------------------------------------------------------------------------------------------*/
+
+/*A macro tool*/
+%macro beta_estimator(dataset, y_var, x_var, noprint_reg, outpath);	
+
+	/*Check noprint_reg*/
+	%if %lowcase(&noprint_reg.) ne noprint and %length(&noprint_reg.) > 0 %then %do;
+		%put "ERROR: the inserted value for noprint_reg is &noprint_reg.. Insert noprint or nothing.";
+		%abort;
+	%end;
+	
+	/*Check variables*/
+	proc sql noprint;
+	    select name into :var_dataset separated by ' '
+	    from dictionary.columns
+	    where libname = "%upcase(%scan(&dataset., 1, '.'))"
+	    and memname = "%upcase(%scan(&dataset., 2, '.'))";
+	quit;
+	
+	%put Variabili del dataset: &var_dataset.;
+	%local delim;
+    %let delim = %str(,);
+	
+    %if %sysfunc(findw(&var_dataset., &y_var.)) = 0 or 
+        %sysfunc(findw(&var_dataset., &x_var.)) = 0 %then %do;
+        %put "ERROR: Una o entrambe le variabili (&y_var, &x_var) non sono presenti nel dataset.";
+        %abort; 
+    %end;
+
+	/*Output path*/
+	libname out &outpath.;
+		
+	/*Beta estimator*/
+	proc reg data=&dataset. outest=out.regr_1(keep=&x_var. Intercept) &noprint_reg.;
+	   model &y_var. = &x_var.;
+	run; 
+  
+%mend beta_estimator;
+
+%beta_estimator(dataset=sashelp.class, 
+				y_var=Weight, 
+				x_var=Height, 
+				noprint_reg=noprint,
+				outpath="/home/u61132736/Applied Mathematics/Regressioni/Out");
+
+
+
+
+
+
